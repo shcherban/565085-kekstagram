@@ -46,11 +46,15 @@ var generatePicture = function (index) {
   return picture;
 };
 
-var pictures = [];
+var generateAllPictures = function (numberOfPictures) {
+  var pictures = [];
+  for (var i = 1; i <= numberOfPictures; i++) {
+    pictures.push(generatePicture(i));
+  }
+  return pictures;
+};
 
-for (var i = 1; i <= NUMBER_OF_PICTURES; i++) {
-  pictures.push(generatePicture(i));
-}
+var pictures = generateAllPictures(NUMBER_OF_PICTURES);
 
 var pictureTemplate = document.querySelector('#picture')
   .content;
@@ -58,7 +62,7 @@ var pictureTemplate = document.querySelector('#picture')
 var renderPictures = function (picturesArray) {
   var picturesElement = document.querySelector('.pictures');
   var fragment = document.createDocumentFragment();
-  for (i = 0; i <= picturesArray.length - 1; i++) {
+  for (var i = 0; i <= picturesArray.length - 1; i++) {
     var pictureElement = pictureTemplate.cloneNode(true);
     var imageElement = pictureElement.querySelector('.picture__img');
     var likesElement = pictureElement.querySelector('.picture__stat--likes');
@@ -84,7 +88,7 @@ var renderBigPicture = function (picture) {
   bigPictureCommentsCountElement.textContent = picture.comments.length;
   bigPictureLikesCountElement.textContent = picture.likes;
   var fragment = document.createDocumentFragment();
-  for (i = 0; i <= picture.comments.length - 1; i++) {
+  for (var i = 0; i <= picture.comments.length - 1; i++) {
     var comment = document.createElement('li');
     var avatar = document.createElement('img');
     var text = document.createElement('span');
