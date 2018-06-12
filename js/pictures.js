@@ -102,5 +102,12 @@ renderPictures(pictures);
 
 renderBigPicture(pictures[0]);
 
-document.querySelector('.social__comment-count').classList.add('visually-hidden');
-document.querySelector('.social__loadmore').classList.add('visually-hidden');
+var hideElement = function (element) {
+  element.classList.add('visually-hidden');
+};
+
+var commentCountElement = document.querySelector('.social__comment-count');
+var loadmoreElement = document.querySelector('.social__loadmore');
+
+hideElement(commentCountElement);
+hideElement(loadmoreElement);
