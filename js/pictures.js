@@ -30,9 +30,9 @@ var getRandomValue = function (from, to) {
   return Math.round((to - from - 1) * Math.random() + 1);
 };
 
-var generatePicture = function (i) {
+var generatePicture = function (index) {
   var picture = {};
-  picture.url = 'photos/' + i + '.jpg';
+  picture.url = 'photos/' + index + '.jpg';
   picture.likes = getRandomValue(15, 200);
   picture.comments = [];
   picture.comments[0] = getRandomElement(comments);
