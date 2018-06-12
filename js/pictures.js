@@ -30,7 +30,7 @@ var getRandomValue = function (from, to) {
   return Math.round((to - from - 1) * Math.random() + 1);
 };
 
-var generatePicture = function () {
+var generatePicture = function (i) {
   var picture = {};
   picture.url = 'photos/' + i + '.jpg';
   picture.likes = getRandomValue(15, 200);
@@ -49,7 +49,7 @@ var generatePicture = function () {
 var pictures = [];
 
 for (var i = 1; i <= NUMBER_OF_PICTURES; i++) {
-  pictures.push(generatePicture());
+  pictures.push(generatePicture(i));
 }
 
 var pictureTemplate = document.querySelector('#picture')
