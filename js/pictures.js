@@ -60,7 +60,7 @@ var renderPictures = function (picturesArray) {
     var commentsCountElement = pictureElement.querySelector('.picture__stat--comments');
     imageElement.src = picturesArray[i].url;
     likesElement.textContent = picturesArray[i].likes;
-    commentsCountElement.textContent = picturesArray[i].comments.length.toString();
+    commentsCountElement.textContent = picturesArray[i].comments.length;
     fragment.appendChild(pictureElement);
   }
   picturesElement.appendChild(fragment);
@@ -76,7 +76,7 @@ var socialCaption = bigPictureElement.querySelector('.social__caption');
 var renderBigPicture = function (picture) {
   bigPictureElement.classList.remove('hidden');
   bigPictureImageElement.src = picture.url;
-  bigPictureCommentsCountElement.textContent = picture.comments.length.toString();
+  bigPictureCommentsCountElement.textContent = picture.comments.length;
   bigPictureLikesCountElement.textContent = picture.likes;
   var fragment = document.createDocumentFragment();
   for (i = 0; i <= picture.comments.length - 1; i++) {
