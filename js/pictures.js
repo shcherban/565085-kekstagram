@@ -25,13 +25,18 @@ var getRandomElement = function (elements) {
   return elements[randomIndex];
 };
 
+// возвращает случайное целое число от from до to включительно
+var getRandomValue = function (from, to) {
+  return Math.round((to - from - 1) * Math.random() + 1);
+}
+
 var generatePicture = function () {
   var picture = {};
-  picture.url = 'photos/' + Math.round(24 * Math.random() + 1) + '.jpg';
-  picture.likes = Math.round(185 * Math.random() + 15);
+  picture.url = 'photos/' + i + '.jpg';
+  picture.likes = getRandomValue(15, 200);
   picture.comments = [];
   picture.comments[0] = getRandomElement(comments);
-  if (Math.round(Math.random())) {
+  if (getRandomValue(0, 1)) {
     do {
       picture.comments[1] = getRandomElement(comments);
     }
@@ -85,7 +90,7 @@ var renderBigPicture = function (picture) {
     var text = document.createElement('span');
     comment.classList.add('social__comment', 'social__comment--text');
     avatar.classList.add('social__picture');
-    avatar.src = 'img/avatar-' + Math.round(5 * Math.random() + 1) + '.svg';
+    avatar.src = 'img/avatar-' + getRandomValue(1, 6) + '.svg';
     avatar.alt = 'Аватар комментатора фотографии';
     avatar.width = '35';
     avatar.height = '35';
