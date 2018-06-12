@@ -28,7 +28,7 @@ var getRandomElement = function (elements) {
 // возвращает случайное целое число от from до to включительно
 var getRandomValue = function (from, to) {
   return Math.round((to - from - 1) * Math.random() + 1);
-}
+};
 
 var generatePicture = function () {
   var picture = {};
