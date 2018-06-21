@@ -4,11 +4,11 @@ var NUMBER_OF_PICTURES = 25;
 var ENTER_KEY_CODE = 13;
 var ESCAPE_KEY_CODE = 27;
 var MAX_EFFECT_DEPTH = 100;
-var DEFAUL_EFFECT_DEPTH = 100;
-var MIN_RESIZE_VALUE = 25;
-var MAX_RESIZE_VALUE = 100;
-var RESIZE_VALUE_STEP = 25;
-var DEFAUL_REZISE_VALUE = 100;
+var DEFAULT_EFFECT_DEPTH = 100;
+var MIN_RESIZING_VALUE = 25;
+var MAX_RESIZING_VALUE = 100;
+var RESIZING_VALUE_STEP = 25;
+var DEFAULT_REZISING_VALUE = 100;
 
 var comments = [
   'Всё отлично!',
@@ -136,12 +136,12 @@ var scalePin = imageUploadOverlay.querySelector('.scale__pin');
 var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
 var effectsRadio = imageUploadOverlay.querySelectorAll('.effects__radio');
 var selectedEffect = imageUploadOverlay.querySelector('.effects__radio:checked').value;
-var effectDepth = DEFAUL_EFFECT_DEPTH;
+var effectDepth = DEFAULT_EFFECT_DEPTH;
 var imgUploadPreview = imageUploadOverlay.querySelector('.img-upload__preview');
 var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--minus');
 var resizeControlPlus = imageUploadOverlay.querySelector('.resize__control--plus');
 var resizeControlValueElement = imageUploadOverlay.querySelector('.resize__control--value');
-var resizeValue;
+var resizingValue;
 
 var openImageUpload = function () {
   imageUploadOverlay.classList.remove('hidden');
@@ -149,9 +149,9 @@ var openImageUpload = function () {
   closeUploadButton.addEventListener('click', closeImageUpload);
   closeUploadButton.addEventListener('keydown', closeUploadButtonEnterKeydownHandler);
   scalePin.addEventListener('mouseup', scalePinMouseupHandler);
-  resizeValue = DEFAUL_REZISE_VALUE;
-  resizeControlValueElement.value = resizeValue + '%';
-  resizeImagePreview(resizeValue);
+  resizingValue = DEFAULT_REZISING_VALUE;
+  resizeControlValueElement.value = resizingValue + '%';
+  resizeImagePreview(resizingValue);
   applyEffect(selectedEffect, effectDepth);
 };
 
@@ -228,7 +228,7 @@ uploadFileElement.addEventListener('change', function () {
 var addEffectRadioClickListener = function (effectRadio) {
   effectRadio.addEventListener('click', function () {
     selectedEffect = effectRadio.value;
-    effectDepth = DEFAUL_EFFECT_DEPTH;
+    effectDepth = DEFAULT_EFFECT_DEPTH;
     applyEffect(selectedEffect, effectDepth);
   });
 };
@@ -237,26 +237,26 @@ for (var i = 0; i <= effectsRadio.length - 1; i++) {
   addEffectRadioClickListener(effectsRadio[i]);
 }
 
-var resizeImagePreview = function (resizeCoefficient) {
-  imgUploadPreview.style.transform = 'scale(' + resizeCoefficient / MAX_RESIZE_VALUE + ')';
+var resizeImagePreview = function (resizingValue) {
+  imgUploadPreview.style.transform = 'scale(' + resizingValue / MAX_RESIZING_VALUE + ')';
 };
 
 resizeControlMinus.addEventListener('click', function () {
-  resizeValue -= RESIZE_VALUE_STEP;
-  if (resizeValue < MIN_RESIZE_VALUE) {
-    resizeValue = MIN_RESIZE_VALUE;
+  resizingValue -= RESIZING_VALUE_STEP;
+  if (resizingValue < MIN_RESIZING_VALUE) {
+    resizingValue = MIN_RESIZING_VALUE;
   }
-  resizeImagePreview(resizeValue);
-  resizeControlValueElement.value = resizeValue + '%';
+  resizeImagePreview(resizingValue);
+  resizeControlValueElement.value = resizingValue + '%';
 });
 
 resizeControlPlus.addEventListener('click', function () {
-  resizeValue += RESIZE_VALUE_STEP;
-  if (resizeValue > MAX_RESIZE_VALUE) {
-    resizeValue = MAX_RESIZE_VALUE;
+  resizingValue += RESIZING_VALUE_STEP;
+  if (resizingValue > MAX_RESIZING_VALUE) {
+    resizingValue = MAX_RESIZING_VALUE;
   }
-  resizeImagePreview(resizeValue);
-  resizeControlValueElement.value = resizeValue + '%';
+  resizeImagePreview(resizingValue);
+  resizeControlValueElement.value = resizingValue + '%';
 });
 
 var pictureLinks = document.querySelectorAll('.picture__link');
