@@ -237,8 +237,8 @@ for (var i = 0; i <= effectsRadio.length - 1; i++) {
   addEffectRadioClickListener(effectsRadio[i]);
 }
 
-var resizeImagePreview = function (resizingValue) {
-  imgUploadPreview.style.transform = 'scale(' + resizingValue / MAX_RESIZING_VALUE + ')';
+var resizeImagePreview = function (scaleFactor) {
+  imgUploadPreview.style.transform = 'scale(' + scaleFactor / MAX_RESIZING_VALUE + ')';
 };
 
 resizeControlMinus.addEventListener('click', function () {
