@@ -152,6 +152,8 @@ var openImageUpload = function () {
   for (var i = 0; i <= effectsRadio.length - 1; i++) {
     effectsRadio[i].addEventListener('click', effectRadioClickHandlers[i]);
   }
+  resizeControlMinus.addEventListener('click', resizeControlMinusClickHandler);
+  resizeControlPlus.addEventListener('click', resizeControlPlusClickHandler);
   resizingValue = DEFAULT_REZISING_VALUE;
   resizeControlValueElement.value = resizingValue + '%';
   resizeImagePreview(resizingValue);
@@ -168,6 +170,8 @@ var closeImageUpload = function () {
   for (var i = 0; i <= effectsRadio.length - 1; i++) {
     effectsRadio[i].removeEventListener('click', effectRadioClickHandlers[i]);
   }
+  resizeControlMinus.removeEventListener('click', resizeControlMinusClickHandler);
+  resizeControlPlus.removeEventListener('click', resizeControlPlusClickHandler);
 };
 
 var documentEscapeKeydownHandler = function (evt) {
@@ -247,23 +251,23 @@ var resizeImagePreview = function (scaleFactor) {
   imgUploadPreview.style.transform = 'scale(' + scaleFactor / MAX_RESIZING_VALUE + ')';
 };
 
-resizeControlMinus.addEventListener('click', function () {
+var resizeControlMinusClickHandler = function () {
   resizingValue -= RESIZING_VALUE_STEP;
   if (resizingValue < MIN_RESIZING_VALUE) {
     resizingValue = MIN_RESIZING_VALUE;
   }
   resizeImagePreview(resizingValue);
   resizeControlValueElement.value = resizingValue + '%';
-});
+};
 
-resizeControlPlus.addEventListener('click', function () {
+var resizeControlPlusClickHandler = function () {
   resizingValue += RESIZING_VALUE_STEP;
   if (resizingValue > MAX_RESIZING_VALUE) {
     resizingValue = MAX_RESIZING_VALUE;
   }
   resizeImagePreview(resizingValue);
   resizeControlValueElement.value = resizingValue + '%';
-});
+};
 
 var pictureLinks = document.querySelectorAll('.picture__link');
 var bigPictureCancelButton = bigPictureElement.querySelector('#picture-cancel');
