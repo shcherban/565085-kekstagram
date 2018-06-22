@@ -149,6 +149,9 @@ var openImageUpload = function () {
   closeUploadButton.addEventListener('click', closeImageUpload);
   closeUploadButton.addEventListener('keydown', closeUploadButtonEnterKeydownHandler);
   scalePin.addEventListener('mouseup', scalePinMouseupHandler);
+  for (var i = 0; i <= effectsRadio.length - 1; i++) {
+    effectsRadio[i].addEventListener('click', effectRadioClickHandlers[i]);
+  }
   resizingValue = DEFAULT_REZISING_VALUE;
   resizeControlValueElement.value = resizingValue + '%';
   resizeImagePreview(resizingValue);
@@ -162,6 +165,9 @@ var closeImageUpload = function () {
   closeUploadButton.removeEventListener('click', closeImageUpload);
   closeUploadButton.removeEventListener('click', closeUploadButtonEnterKeydownHandler);
   scalePin.removeEventListener('mouseup', scalePinMouseupHandler);
+  for (var i = 0; i <= effectsRadio.length - 1; i++) {
+    effectsRadio[i].removeEventListener('click', effectRadioClickHandlers[i]);
+  }
 };
 
 var documentEscapeKeydownHandler = function (evt) {
@@ -225,16 +231,16 @@ uploadFileElement.addEventListener('change', function () {
   openImageUpload();
 });
 
-var addEffectRadioClickListener = function (effectRadio) {
-  effectRadio.addEventListener('click', function () {
-    selectedEffect = effectRadio.value;
-    effectDepth = DEFAULT_EFFECT_DEPTH;
-    applyEffect(selectedEffect, effectDepth);
-  });
-};
-
+var effectRadioClickHandlers = [];
 for (var i = 0; i <= effectsRadio.length - 1; i++) {
-  addEffectRadioClickListener(effectsRadio[i]);
+  (function (effectRadioValue) {
+    var effectRadioClickHandler = function () {
+      selectedEffect = effectRadioValue;
+      effectDepth = DEFAULT_EFFECT_DEPTH;
+      applyEffect(selectedEffect, effectDepth);
+    };
+    effectRadioClickHandlers.push(effectRadioClickHandler);
+  })(effectsRadio[i].value);
 }
 
 var resizeImagePreview = function (scaleFactor) {
