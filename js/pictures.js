@@ -1,6 +1,14 @@
 'use strict';
 
 var NUMBER_OF_PICTURES = 25;
+var ENTER_KEY_CODE = 13;
+var ESCAPE_KEY_CODE = 27;
+var MAX_EFFECT_DEPTH = 100;
+var DEFAULT_EFFECT_DEPTH = 100;
+var MIN_RESIZING_VALUE = 25;
+var MAX_RESIZING_VALUE = 100;
+var RESIZING_VALUE_STEP = 25;
+var DEFAULT_REZISING_VALUE = 100;
 
 var comments = [
   'Всё отлично!',
@@ -76,7 +84,7 @@ var renderPictures = function (picturesArray) {
 };
 
 var bigPictureElement = document.querySelector('.big-picture');
-var bigPictureImageElement = bigPictureElement.querySelector('.big-picture__img');
+var bigPictureImageElement = bigPictureElement.querySelector('.big-picture__img img');
 var bigPictureCommentsCountElement = bigPictureElement.querySelector('.comments-count');
 var bigPictureLikesCountElement = bigPictureElement.querySelector('.likes-count');
 var bigPictureComments = bigPictureElement.querySelector('.social__comments');
@@ -91,25 +99,25 @@ var renderBigPicture = function (picture) {
   for (var i = 0; i <= picture.comments.length - 1; i++) {
     var comment = document.createElement('li');
     var avatar = document.createElement('img');
-    var text = document.createElement('span');
+    var text = document.createElement('p');
     comment.classList.add('social__comment', 'social__comment--text');
     avatar.classList.add('social__picture');
     avatar.src = 'img/avatar-' + getRandomValue(1, 6) + '.svg';
     avatar.alt = 'Аватар комментатора фотографии';
     avatar.width = '35';
     avatar.height = '35';
+    text.classList.add('social__text');
     text.textContent = picture.comments[i];
     comment.appendChild(avatar);
     comment.appendChild(text);
     fragment.appendChild(comment);
   }
+  bigPictureComments.innerHTML = '';
   bigPictureComments.appendChild(fragment);
   socialCaption.textContent = picture.description;
 };
 
 renderPictures(pictures);
-
-renderBigPicture(pictures[0]);
 
 var hideElement = function (element) {
   element.classList.add('visually-hidden');
@@ -120,3 +128,168 @@ var loadmoreElement = document.querySelector('.social__loadmore');
 
 hideElement(commentCountElement);
 hideElement(loadmoreElement);
+
+var uploadFileElement = document.querySelector('#upload-file');
+var imageUploadOverlay = document.querySelector('.img-upload__overlay');
+var closeUploadButton = imageUploadOverlay.querySelector('#upload-cancel');
+var scalePin = imageUploadOverlay.querySelector('.scale__pin');
+var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
+var effectsRadio = imageUploadOverlay.querySelectorAll('.effects__radio');
+var selectedEffect = imageUploadOverlay.querySelector('.effects__radio:checked').value;
+var effectDepth = DEFAULT_EFFECT_DEPTH;
+var imgUploadPreview = imageUploadOverlay.querySelector('.img-upload__preview');
+var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--minus');
+var resizeControlPlus = imageUploadOverlay.querySelector('.resize__control--plus');
+var resizeControlValueElement = imageUploadOverlay.querySelector('.resize__control--value');
+var resizingValue;
+
+var openImageUpload = function () {
+  imageUploadOverlay.classList.remove('hidden');
+  document.addEventListener('keydown', documentEscapeKeydownHandler);
+  closeUploadButton.addEventListener('click', closeImageUpload);
+  closeUploadButton.addEventListener('keydown', closeUploadButtonEnterKeydownHandler);
+  scalePin.addEventListener('mouseup', scalePinMouseupHandler);
+  for (var i = 0; i <= effectsRadio.length - 1; i++) {
+    effectsRadio[i].addEventListener('click', effectRadioClickHandlers[i]);
+  }
+  resizeControlMinus.addEventListener('click', resizeControlMinusClickHandler);
+  resizeControlPlus.addEventListener('click', resizeControlPlusClickHandler);
+  resizingValue = DEFAULT_REZISING_VALUE;
+  resizeControlValueElement.value = resizingValue + '%';
+  resizeImagePreview(resizingValue);
+  applyEffect(selectedEffect, effectDepth);
+};
+
+var closeImageUpload = function () {
+  imageUploadOverlay.classList.add('hidden');
+  uploadFileElement.value = '';
+  document.removeEventListener('keydown', documentEscapeKeydownHandler);
+  closeUploadButton.removeEventListener('click', closeImageUpload);
+  closeUploadButton.removeEventListener('click', closeUploadButtonEnterKeydownHandler);
+  scalePin.removeEventListener('mouseup', scalePinMouseupHandler);
+  for (var i = 0; i <= effectsRadio.length - 1; i++) {
+    effectsRadio[i].removeEventListener('click', effectRadioClickHandlers[i]);
+  }
+  resizeControlMinus.removeEventListener('click', resizeControlMinusClickHandler);
+  resizeControlPlus.removeEventListener('click', resizeControlPlusClickHandler);
+};
+
+var documentEscapeKeydownHandler = function (evt) {
+  if (evt.keyCode === ESCAPE_KEY_CODE) {
+    if (!imageUploadOverlay.classList.contains('hidden')) {
+      closeImageUpload();
+    }
+    if (!bigPictureElement.classList.contains('hidden')) {
+      closeBigPictureOverlay();
+    }
+  }
+};
+
+var closeUploadButtonEnterKeydownHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEY_CODE) {
+    closeImageUpload();
+  }
+};
+
+var applyEffect = function (effect, depth) {
+  var isValidEffect = true;
+  var scaleDepth = function (maxValue) {
+    return maxValue * depth / MAX_EFFECT_DEPTH;
+  };
+  if (!effect) {
+    effect = 'none';
+  }
+  switch (effect) {
+    case 'none':
+      imgUploadPreview.style.filter = 'none';
+      break;
+    case 'chrome':
+      imgUploadPreview.style.filter = 'grayscale(' + scaleDepth(1) + ')';
+      break;
+    case 'sepia':
+      imgUploadPreview.style.filter = 'sepia(' + scaleDepth(1) + ')';
+      break;
+    case 'marvin':
+      imgUploadPreview.style.filter = 'invert(' + scaleDepth(100) + '%)';
+      break;
+    case 'phobos':
+      imgUploadPreview.style.filter = 'blur(' + scaleDepth(3) + 'px)';
+      break;
+    case 'heat':
+      imgUploadPreview.style.filter = 'brightness(' + scaleDepth(3) + ')';
+      break;
+    default:
+      isValidEffect = false;
+  }
+  if (isValidEffect) {
+    imgUploadPreview.classList.add('effects__preview--' + effect);
+  }
+};
+
+var scalePinMouseupHandler = function () {
+  effectDepth = scaleValueElement.value;
+  applyEffect(selectedEffect, effectDepth);
+};
+
+uploadFileElement.addEventListener('change', function () {
+  openImageUpload();
+});
+
+var effectRadioClickHandlers = [];
+for (var i = 0; i <= effectsRadio.length - 1; i++) {
+  (function (effectRadioValue) {
+    var effectRadioClickHandler = function () {
+      selectedEffect = effectRadioValue;
+      effectDepth = DEFAULT_EFFECT_DEPTH;
+      applyEffect(selectedEffect, effectDepth);
+    };
+    effectRadioClickHandlers.push(effectRadioClickHandler);
+  })(effectsRadio[i].value);
+}
+
+var resizeImagePreview = function (scaleFactor) {
+  imgUploadPreview.style.transform = 'scale(' + scaleFactor / MAX_RESIZING_VALUE + ')';
+};
+
+var resizeControlMinusClickHandler = function () {
+  resizingValue -= RESIZING_VALUE_STEP;
+  if (resizingValue < MIN_RESIZING_VALUE) {
+    resizingValue = MIN_RESIZING_VALUE;
+  }
+  resizeImagePreview(resizingValue);
+  resizeControlValueElement.value = resizingValue + '%';
+};
+
+var resizeControlPlusClickHandler = function () {
+  resizingValue += RESIZING_VALUE_STEP;
+  if (resizingValue > MAX_RESIZING_VALUE) {
+    resizingValue = MAX_RESIZING_VALUE;
+  }
+  resizeImagePreview(resizingValue);
+  resizeControlValueElement.value = resizingValue + '%';
+};
+
+var pictureLinks = document.querySelectorAll('.picture__link');
+var bigPictureCancelButton = bigPictureElement.querySelector('#picture-cancel');
+var bigPictureCancelButtonClickHandler = function () {
+  closeBigPictureOverlay();
+};
+
+var addPictureEventListener = function (pictureLink, pictureIndex) {
+  pictureLink.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    renderBigPicture(pictures[pictureIndex]);
+    bigPictureCancelButton.addEventListener('click', bigPictureCancelButtonClickHandler);
+    document.addEventListener('keydown', documentEscapeKeydownHandler);
+  });
+};
+
+for (i = 0; i <= pictureLinks.length - 1; i++) {
+  addPictureEventListener(pictureLinks[i], i);
+}
+
+var closeBigPictureOverlay = function () {
+  bigPictureElement.classList.add('hidden');
+  bigPictureCancelButton.removeEventListener('click', bigPictureCancelButtonClickHandler);
+  document.removeEventListener('keydown', documentEscapeKeydownHandler);
+};
