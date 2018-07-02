@@ -166,6 +166,9 @@ var openImageUpload = function () {
   textDescriptionInput.addEventListener('focus', textDescriptionInputFocusHandler);
   textDescriptionInput.addEventListener('blur', textDescriptionInputBlurHandler);
   textDescriptionInput.addEventListener('invalid', textDescriptionInputInvalidHandler);
+  textHashtagsInput.addEventListener('invalid', textHashtagsInputInvalidHandler);
+  textHashtagsInput.addEventListener('keydown', textHashtagsInputKeydownHandler);
+  textDescriptionInput.addEventListener('keydown', textDescriptionInputKeydownHandler);
 };
 
 var closeImageUpload = function () {
@@ -185,6 +188,11 @@ var closeImageUpload = function () {
   textDescriptionInput.removeEventListener('focus', textDescriptionInputFocusHandler);
   textDescriptionInput.removeEventListener('blur', textDescriptionInputBlurHandler);
   textDescriptionInput.removeEventListener('invalid', textDescriptionInputInvalidHandler);
+  textHashtagsInput.removeEventListener('invalid', textHashtagsInputInvalidHandler);
+  textHashtagsInput.removeEventListener('keydown', textHashtagsInputKeydownHandler);
+  textDescriptionInput.removeEventListener('keydown', textDescriptionInputKeydownHandler);
+  textHashtagsInput.classList.remove('invalid-field');
+  textDescriptionInput.classList.remove('invalid-field');
 };
 
 var documentEscapeKeydownHandler = function (evt) {
@@ -348,6 +356,10 @@ var textHashtagsInputFocusHandler = function () {
   document.removeEventListener('keydown', documentEscapeKeydownHandler);
 };
 
+var textHashtagsInputKeydownHandler = function () {
+  textHashtagsInput.classList.remove('invalid-field');
+};
+
 var textHashtagsInputBlurHandler = function () {
   document.addEventListener('keydown', documentEscapeKeydownHandler);
   hashtags = textHashtagsInput.value.split(' ');
@@ -358,6 +370,10 @@ var textDescriptionInputFocusHandler = function () {
   document.removeEventListener('keydown', documentEscapeKeydownHandler);
 };
 
+var textDescriptionInputKeydownHandler = function () {
+  textDescriptionInput.classList.remove('invalid-field');
+};
+
 var textDescriptionInputBlurHandler = function () {
   document.addEventListener('keydown', documentEscapeKeydownHandler);
 };
@@ -366,4 +382,9 @@ var textDescriptionInputInvalidHandler = function () {
   if (textDescriptionInput.validity.tooLong) {
     textDescriptionInput.setCustomValidity('Слишком длинное описание. Введите не более 140 символов.');
   }
+  textDescriptionInput.classList.add('invalid-field');
+};
+
+var textHashtagsInputInvalidHandler = function () {
+  textHashtagsInput.classList.add('invalid-field');
 };

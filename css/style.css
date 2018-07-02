@@ -1278,3 +1278,7 @@ main {
     grid-row: 1 / span 3;
   }
 }
+
+.invalid-field {
+  border-color: red;
+}
