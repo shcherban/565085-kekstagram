@@ -316,23 +316,14 @@ var closeBigPictureOverlay = function () {
 };
 
 var checkHashtags = function () {
+  textHashtagsInput.setCustomValidity('');
   if (hashtags.length === 0) {
     return;
   }
-  // удаление пустых хэш-тегов, приведение к нижнему регистру
+  // удаление пустых хэш-тегов
   for (i = 0; i <= hashtags.length - 1; i++) {
     if (hashtags[i] === '') {
       hashtags.splice(i--, 1);
-    } else {
-      hashtags[i] = hashtags[i].toLowerCase();
-    }
-  }
-  // удаление дубликатов
-  for (i = 0; i <= hashtags.length - 2; i++) {
-    for (var j = i + 1; j <= hashtags.length - 1; j++) {
-      if (hashtags[j] === hashtags[i]) {
-        hashtags.splice(j--, 1);
-      }
     }
   }
   if (hashtags.length > 5) {
@@ -347,7 +338,12 @@ var checkHashtags = function () {
     } else if (hashtags[i].length > 20) {
       textHashtagsInput.setCustomValidity('Хэш-тег не может быть длиннее 20 символов.');
     } else {
-      textHashtagsInput.setCustomValidity('');
+      for (var j = i + 1; j <= hashtags.length - 1; j++) {
+        if (hashtags[j].toLowerCase() === hashtags[i].toLowerCase()) {
+          textHashtagsInput.setCustomValidity('Хэш-теги не должны повторяться.');
+          return;
+        }
+      }
     }
   }
 };
