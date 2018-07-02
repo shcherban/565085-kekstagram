@@ -142,6 +142,9 @@ var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--min
 var resizeControlPlus = imageUploadOverlay.querySelector('.resize__control--plus');
 var resizeControlValueElement = imageUploadOverlay.querySelector('.resize__control--value');
 var resizingValue;
+var textHashtagsInput = imageUploadOverlay.querySelector('.text__hashtags');
+var textDescriptionInput = imageUploadOverlay.querySelector('.text__description');
+var hashtags = [];
 
 var openImageUpload = function () {
   imageUploadOverlay.classList.remove('hidden');
@@ -158,6 +161,11 @@ var openImageUpload = function () {
   resizeControlValueElement.value = resizingValue + '%';
   resizeImagePreview(resizingValue);
   applyEffect(selectedEffect, effectDepth);
+  textHashtagsInput.addEventListener('focus', textHashtagsInputFocusHandler);
+  textHashtagsInput.addEventListener('blur', textHashtagsInputBlurHandler);
+  textDescriptionInput.addEventListener('focus', textDescriptionInputFocusHandler);
+  textDescriptionInput.addEventListener('blur', textDescriptionInputBlurHandler);
+  textDescriptionInput.addEventListener('invalid', textDescriptionInputInvalidHandler);
 };
 
 var closeImageUpload = function () {
@@ -172,6 +180,11 @@ var closeImageUpload = function () {
   }
   resizeControlMinus.removeEventListener('click', resizeControlMinusClickHandler);
   resizeControlPlus.removeEventListener('click', resizeControlPlusClickHandler);
+  textHashtagsInput.removeEventListener('focus', textHashtagsInputFocusHandler);
+  textHashtagsInput.removeEventListener('blur', textHashtagsInputBlurHandler);
+  textDescriptionInput.removeEventListener('focus', textDescriptionInputFocusHandler);
+  textDescriptionInput.removeEventListener('blur', textDescriptionInputBlurHandler);
+  textDescriptionInput.removeEventListener('invalid', textDescriptionInputInvalidHandler);
 };
 
 var documentEscapeKeydownHandler = function (evt) {
@@ -292,4 +305,65 @@ var closeBigPictureOverlay = function () {
   bigPictureElement.classList.add('hidden');
   bigPictureCancelButton.removeEventListener('click', bigPictureCancelButtonClickHandler);
   document.removeEventListener('keydown', documentEscapeKeydownHandler);
+};
+
+var checkHashtags = function () {
+  if (hashtags.length === 0) {
+    return;
+  }
+  // удаление пустых хэш-тегов, приведение к нижнему регистру
+  for (i = 0; i <= hashtags.length - 1; i++) {
+    if (hashtags[i] === '') {
+      hashtags.splice(i--, 1);
+    } else {
+      hashtags[i] = hashtags[i].toLowerCase();
+    }
+  }
+  // удаление дубликатов
+  for (i = 0; i <= hashtags.length - 2; i++) {
+    for (var j = i + 1; j <= hashtags.length - 1; j++) {
+      if (hashtags[j] === hashtags[i]) {
+        hashtags.splice(j--, 1);
+      }
+    }
+  }
+  if (hashtags.length > 5) {
+    textHashtagsInput.setCustomValidity('Задайте не более пяти хэш-тегов.');
+    return;
+  }
+  for (i = 0; i <= hashtags.length - 1; i++) {
+    if (hashtags[i].charAt(0) !== '#') {
+      textHashtagsInput.setCustomValidity('Хэш-тег должен начинаться с символа #.');
+    } else if (hashtags[i].length < 2) {
+      textHashtagsInput.setCustomValidity('Хэш-тег не может состоять из одного символа #.');
+    } else if (hashtags[i].length > 20) {
+      textHashtagsInput.setCustomValidity('Хэш-тег не может быть длиннее 20 символов.');
+    } else {
+      textHashtagsInput.setCustomValidity('');
+    }
+  }
+};
+
+var textHashtagsInputFocusHandler = function () {
+  document.removeEventListener('keydown', documentEscapeKeydownHandler);
+};
+
+var textHashtagsInputBlurHandler = function () {
+  document.addEventListener('keydown', documentEscapeKeydownHandler);
+  hashtags = textHashtagsInput.value.split(' ');
+  checkHashtags();
+};
+
+var textDescriptionInputFocusHandler = function () {
+  document.removeEventListener('keydown', documentEscapeKeydownHandler);
+};
+
+var textDescriptionInputBlurHandler = function () {
+  document.addEventListener('keydown', documentEscapeKeydownHandler);
+};
+
+var textDescriptionInputInvalidHandler = function () {
+  if (textDescriptionInput.validity.tooLong) {
+    textDescriptionInput.setCustomValidity('Слишком длинное описание. Введите не более 140 символов.');
+  }
 };
