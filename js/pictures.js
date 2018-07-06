@@ -132,11 +132,13 @@ hideElement(loadmoreElement);
 var uploadFileElement = document.querySelector('#upload-file');
 var imageUploadOverlay = document.querySelector('.img-upload__overlay');
 var closeUploadButton = imageUploadOverlay.querySelector('#upload-cancel');
-var scalePin = imageUploadOverlay.querySelector('.scale__pin');
+var scaleLine = imageUploadOverlay.querySelector('.scale__line');
+var scaleLevel = scaleLine.querySelector('.scale__level');
+var scalePin = scaleLine.querySelector('.scale__pin');
 var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
 var effectsRadio = imageUploadOverlay.querySelectorAll('.effects__radio');
 var selectedEffect = imageUploadOverlay.querySelector('.effects__radio:checked').value;
-var effectDepth = DEFAULT_EFFECT_DEPTH;
+// var effectDepth = DEFAULT_EFFECT_DEPTH;
 var imgUploadPreview = imageUploadOverlay.querySelector('.img-upload__preview');
 var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--minus');
 var resizeControlPlus = imageUploadOverlay.querySelector('.resize__control--plus');
@@ -146,12 +148,44 @@ var textHashtagsInput = imageUploadOverlay.querySelector('.text__hashtags');
 var textDescriptionInput = imageUploadOverlay.querySelector('.text__description');
 var hashtags = [];
 
+var setDefaultEffectDepth = function () {
+  scaleValueElement.value = DEFAULT_EFFECT_DEPTH;
+  scaleLevel.style.width = scaleValueElement.value + '%';
+  scalePin.style.left = scaleValueElement.value * scaleLine.offsetWidth / 100 + 'px';
+  applyEffect(selectedEffect, scaleValueElement.value);
+};
+
+var scalePinMousedownHandler = function (downEvt) {
+  downEvt.preventDefault();
+  var documentMousemoveHandler = function (moveEvt) {
+    moveEvt.preventDefault();
+    var shift = moveEvt.clientX - startX;
+    scalePin.style.left = (scalePin.offsetLeft + shift < 0 || scalePin.offsetLeft + shift > scaleLine.offsetWidth) ?
+      (scalePin.offsetLeft + 'px') : (scalePin.offsetLeft + shift + 'px');
+    scaleValueElement.value = 100 * scalePin.offsetLeft / scaleLine.offsetWidth;
+    scaleLevel.style.width = scaleValueElement.value + '%';
+    applyEffect(selectedEffect, scaleValueElement.value);
+    startX = moveEvt.clientX;
+  };
+  var documentMouseupHandler = function (upEvt) {
+    upEvt.preventDefault();
+    scaleValueElement.value = 100 * scalePin.offsetLeft / scaleLine.offsetWidth;
+    scaleLevel.style.width = scaleValueElement.value + '%';
+    applyEffect(selectedEffect, scaleValueElement.value);
+    document.removeEventListener('mouseup', documentMouseupHandler);
+    document.removeEventListener('mousemove', documentMousemoveHandler);
+  };
+  var startX = downEvt.clientX;
+  document.addEventListener('mousemove', documentMousemoveHandler);
+  document.addEventListener('mouseup', documentMouseupHandler);
+};
+
 var openImageUpload = function () {
   imageUploadOverlay.classList.remove('hidden');
   document.addEventListener('keydown', documentEscapeKeydownHandler);
   closeUploadButton.addEventListener('click', closeImageUpload);
   closeUploadButton.addEventListener('keydown', closeUploadButtonEnterKeydownHandler);
-  scalePin.addEventListener('mouseup', scalePinMouseupHandler);
+  scalePin.addEventListener('mousedown', scalePinMousedownHandler);
   for (var i = 0; i <= effectsRadio.length - 1; i++) {
     effectsRadio[i].addEventListener('click', effectRadioClickHandlers[i]);
   }
@@ -160,7 +194,7 @@ var openImageUpload = function () {
   resizingValue = DEFAULT_REZISING_VALUE;
   resizeControlValueElement.value = resizingValue + '%';
   resizeImagePreview(resizingValue);
-  applyEffect(selectedEffect, effectDepth);
+  setDefaultEffectDepth();
   textHashtagsInput.addEventListener('focus', textHashtagsInputFocusHandler);
   textHashtagsInput.addEventListener('blur', textHashtagsInputBlurHandler);
   textDescriptionInput.addEventListener('focus', textDescriptionInputFocusHandler);
@@ -177,7 +211,7 @@ var closeImageUpload = function () {
   document.removeEventListener('keydown', documentEscapeKeydownHandler);
   closeUploadButton.removeEventListener('click', closeImageUpload);
   closeUploadButton.removeEventListener('click', closeUploadButtonEnterKeydownHandler);
-  scalePin.removeEventListener('mouseup', scalePinMouseupHandler);
+  scalePin.removeEventListener('mousedown', scalePinMousedownHandler);
   for (var i = 0; i <= effectsRadio.length - 1; i++) {
     effectsRadio[i].removeEventListener('click', effectRadioClickHandlers[i]);
   }
@@ -247,11 +281,6 @@ var applyEffect = function (effect, depth) {
   }
 };
 
-var scalePinMouseupHandler = function () {
-  effectDepth = scaleValueElement.value;
-  applyEffect(selectedEffect, effectDepth);
-};
-
 uploadFileElement.addEventListener('change', function () {
   openImageUpload();
 });
@@ -261,8 +290,7 @@ for (var i = 0; i <= effectsRadio.length - 1; i++) {
   (function (effectRadioValue) {
     var effectRadioClickHandler = function () {
       selectedEffect = effectRadioValue;
-      effectDepth = DEFAULT_EFFECT_DEPTH;
-      applyEffect(selectedEffect, effectDepth);
+      setDefaultEffectDepth();
     };
     effectRadioClickHandlers.push(effectRadioClickHandler);
   })(effectsRadio[i].value);
