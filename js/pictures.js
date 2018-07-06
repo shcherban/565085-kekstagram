@@ -138,7 +138,6 @@ var scalePin = scaleLine.querySelector('.scale__pin');
 var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
 var effectsRadio = imageUploadOverlay.querySelectorAll('.effects__radio');
 var selectedEffect = imageUploadOverlay.querySelector('.effects__radio:checked').value;
-// var effectDepth = DEFAULT_EFFECT_DEPTH;
 var imgUploadPreview = imageUploadOverlay.querySelector('.img-upload__preview');
 var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--minus');
 var resizeControlPlus = imageUploadOverlay.querySelector('.resize__control--plus');
