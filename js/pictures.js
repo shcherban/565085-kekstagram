@@ -132,7 +132,8 @@ hideElement(loadmoreElement);
 var uploadFileElement = document.querySelector('#upload-file');
 var imageUploadOverlay = document.querySelector('.img-upload__overlay');
 var closeUploadButton = imageUploadOverlay.querySelector('#upload-cancel');
-var scaleLine = imageUploadOverlay.querySelector('.scale__line');
+var scale = imageUploadOverlay.querySelector('.scale');
+var scaleLine = scale.querySelector('.scale__line');
 var scaleLevel = scaleLine.querySelector('.scale__level');
 var scalePin = scaleLine.querySelector('.scale__pin');
 var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
@@ -287,10 +288,15 @@ uploadFileElement.addEventListener('change', function () {
 var effectRadioClickHandlers = [];
 for (var i = 0; i <= effectsRadio.length - 1; i++) {
   (function (effectRadioValue) {
-    var effectRadioClickHandler = function () {
-      selectedEffect = effectRadioValue;
-      setDefaultEffectDepth();
-    };
+    var effectRadioClickHandler = (effectRadioValue === 'none') ?
+      (function () {
+        selectedEffect = effectRadioValue;
+        scale.classList.add('hidden');
+      }) : (function () {
+        selectedEffect = effectRadioValue;
+        scale.classList.remove('hidden');
+        setDefaultEffectDepth();
+      });
     effectRadioClickHandlers.push(effectRadioClickHandler);
   })(effectsRadio[i].value);
 }
