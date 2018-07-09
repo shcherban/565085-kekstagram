@@ -137,7 +137,6 @@ var scaleLine = scale.querySelector('.scale__line');
 var scaleLevel = scaleLine.querySelector('.scale__level');
 var scalePin = scaleLine.querySelector('.scale__pin');
 var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
-var effectsRadio = imageUploadOverlay.querySelectorAll('.effects__radio');
 var selectedEffect = imageUploadOverlay.querySelector('.effects__radio:checked').value;
 var imgUploadPreview = imageUploadOverlay.querySelector('.img-upload__preview');
 var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--minus');
@@ -186,9 +185,7 @@ var openImageUpload = function () {
   closeUploadButton.addEventListener('click', closeImageUpload);
   closeUploadButton.addEventListener('keydown', closeUploadButtonEnterKeydownHandler);
   scalePin.addEventListener('mousedown', scalePinMousedownHandler);
-  for (var i = 0; i <= effectsRadio.length - 1; i++) {
-    effectsRadio[i].addEventListener('click', effectRadioClickHandlers[i]);
-  }
+  effectsListElement.addEventListener('click', effectsListElementClickHandler);
   resizeControlMinus.addEventListener('click', resizeControlMinusClickHandler);
   resizeControlPlus.addEventListener('click', resizeControlPlusClickHandler);
   resizingValue = DEFAULT_REZISING_VALUE;
@@ -212,9 +209,7 @@ var closeImageUpload = function () {
   closeUploadButton.removeEventListener('click', closeImageUpload);
   closeUploadButton.removeEventListener('click', closeUploadButtonEnterKeydownHandler);
   scalePin.removeEventListener('mousedown', scalePinMousedownHandler);
-  for (var i = 0; i <= effectsRadio.length - 1; i++) {
-    effectsRadio[i].removeEventListener('click', effectRadioClickHandlers[i]);
-  }
+  effectsListElement.removeEventListener('click', effectsListElementClickHandler);
   resizeControlMinus.removeEventListener('click', resizeControlMinusClickHandler);
   resizeControlPlus.removeEventListener('click', resizeControlPlusClickHandler);
   textHashtagsInput.removeEventListener('focus', textHashtagsInputFocusHandler);
@@ -285,21 +280,18 @@ uploadFileElement.addEventListener('change', function () {
   openImageUpload();
 });
 
-var effectRadioClickHandlers = [];
-for (var i = 0; i <= effectsRadio.length - 1; i++) {
-  (function (effectRadioValue) {
-    var effectRadioClickHandler = (effectRadioValue === 'none') ?
-      (function () {
-        selectedEffect = effectRadioValue;
-        scale.classList.add('hidden');
-      }) : (function () {
-        selectedEffect = effectRadioValue;
-        scale.classList.remove('hidden');
-        setDefaultEffectDepth();
-      });
-    effectRadioClickHandlers.push(effectRadioClickHandler);
-  })(effectsRadio[i].value);
-}
+var effectsListElement = document.querySelector('.effects__list');
+var effectsListElementClickHandler = function (evt) {
+  var target = evt.target;
+  var effectRadioElement = target.closest('input[type=radio]');
+  selectedEffect = effectRadioElement.value;
+  if (selectedEffect === 'none') {
+    scale.classList.add('hidden');
+  } else {
+    scale.classList.remove('hidden');
+  }
+  setDefaultEffectDepth();
+};
 
 var resizeImagePreview = function (scaleFactor) {
   imgUploadPreview.style.transform = 'scale(' + scaleFactor / MAX_RESIZING_VALUE + ')';
@@ -338,7 +330,7 @@ var addPictureEventListener = function (pictureLink, pictureIndex) {
   });
 };
 
-for (i = 0; i <= pictureLinks.length - 1; i++) {
+for (var i = 0; i <= pictureLinks.length - 1; i++) {
   addPictureEventListener(pictureLinks[i], i);
 }
 
