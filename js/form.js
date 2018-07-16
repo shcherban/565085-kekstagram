@@ -47,7 +47,7 @@
     };
     var documentMouseupHandler = function (upEvt) {
       upEvt.preventDefault();
-      scaleValueElement.value = 100 * scalePin.offsetLeft / scaleLine.offsetWidth;
+      scaleValueElement.value = Math.round(100 * scalePin.offsetLeft / scaleLine.offsetWidth);
       scaleLevel.style.width = scaleValueElement.value + '%';
       applyEffect(selectedEffect, scaleValueElement.value);
       document.removeEventListener('mouseup', documentMouseupHandler);
