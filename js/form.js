@@ -1,7 +1,8 @@
 'use strict';
 
 (function () {
-
+  
+  var MAX_HASHTAG_LENGTH = 20;
   var MAX_EFFECT_DEPTH = 100;
   var DEFAULT_EFFECT_DEPTH = 100;
   var MIN_RESIZING_VALUE = 25;
@@ -210,7 +211,7 @@
         textHashtagsInput.setCustomValidity('Хэш-тег должен начинаться с символа #.');
       } else if (hashtags[i].length < 2) {
         textHashtagsInput.setCustomValidity('Хэш-тег не может состоять из одного символа #.');
-      } else if (hashtags[i].length > 20) {
+      } else if (hashtags[i].length > MAX_HASHTAG_LENGTH) {
         textHashtagsInput.setCustomValidity('Хэш-тег не может быть длиннее 20 символов.');
       } else {
         for (var j = i + 1; j <= hashtags.length - 1; j++) {
