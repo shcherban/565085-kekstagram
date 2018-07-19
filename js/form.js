@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-
+  var MAX_HASHTAG_LENGTH = 20;
   var MAX_EFFECT_DEPTH = 100;
   var DEFAULT_EFFECT_DEPTH = 100;
   var MIN_RESIZING_VALUE = 25;
@@ -25,6 +25,12 @@
   var textHashtagsInput = imageUploadOverlay.querySelector('.text__hashtags');
   var textDescriptionInput = imageUploadOverlay.querySelector('.text__description');
   var hashtags = [];
+  var formElement = document.querySelector('.img-upload__form');
+
+  var formElementSubmitHandler = function (evt) {
+    evt.preventDefault();
+    window.backend.upload(new FormData(formElement), closeImageUpload, window.error.openErrorMessage);
+  };
 
   var setDefaultEffectDepth = function () {
     scaleValueElement.value = DEFAULT_EFFECT_DEPTH;
@@ -79,6 +85,7 @@
     textHashtagsInput.addEventListener('invalid', textHashtagsInputInvalidHandler);
     textHashtagsInput.addEventListener('keydown', textHashtagsInputKeydownHandler);
     textDescriptionInput.addEventListener('keydown', textDescriptionInputKeydownHandler);
+    formElement.addEventListener('submit', formElementSubmitHandler);
   };
 
   var closeImageUpload = function () {
@@ -101,6 +108,7 @@
     textDescriptionInput.removeEventListener('keydown', textDescriptionInputKeydownHandler);
     textHashtagsInput.classList.remove('invalid-field');
     textDescriptionInput.classList.remove('invalid-field');
+    formElement.removeEventListener('submit', formElementSubmitHandler);
   };
 
   var documentEscapeKeydownHandler = function (evt) {
@@ -210,13 +218,15 @@
         textHashtagsInput.setCustomValidity('Хэш-тег должен начинаться с символа #.');
       } else if (hashtags[i].length < 2) {
         textHashtagsInput.setCustomValidity('Хэш-тег не может состоять из одного символа #.');
-      } else if (hashtags[i].length > 20) {
-        textHashtagsInput.setCustomValidity('Хэш-тег не может быть длиннее 20 символов.');
       } else {
-        for (var j = i + 1; j <= hashtags.length - 1; j++) {
-          if (hashtags[j].toLowerCase() === hashtags[i].toLowerCase()) {
-            textHashtagsInput.setCustomValidity('Хэш-теги не должны повторяться.');
-            return;
+        if (hashtags[i].length > MAX_HASHTAG_LENGTH) {
+          textHashtagsInput.setCustomValidity('Хэш-тег не может быть длиннее 20 символов.');
+        } else {
+          for (var j = i + 1; j <= hashtags.length - 1; j++) {
+            if (hashtags[j].toLowerCase() === hashtags[i].toLowerCase()) {
+              textHashtagsInput.setCustomValidity('Хэш-теги не должны повторяться.');
+              return;
+            }
           }
         }
       }
@@ -259,5 +269,4 @@
   var textHashtagsInputInvalidHandler = function () {
     textHashtagsInput.classList.add('invalid-field');
   };
-
 })();
