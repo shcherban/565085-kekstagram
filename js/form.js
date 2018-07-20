@@ -78,6 +78,8 @@
     resizeControlValueElement.value = resizingValue + '%';
     resizeImagePreview(resizingValue);
     setDefaultEffectDepth();
+    textHashtagsInput.value = '';
+    textDescriptionInput.value = '';
     textHashtagsInput.addEventListener('focus', textHashtagsInputFocusHandler);
     textHashtagsInput.addEventListener('blur', textHashtagsInputBlurHandler);
     textDescriptionInput.addEventListener('focus', textDescriptionInputFocusHandler);
