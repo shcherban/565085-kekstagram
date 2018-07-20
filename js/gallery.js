@@ -88,7 +88,7 @@
     renderPictures(picturesArray);
   };
   var filterDiscussedPictures = function (picturesArray) {
-    picturesArray.sort(function(a, b) {
+    picturesArray.sort(function (a, b) {
       return window.utils.sortByDesc(a.comments.length, b.comments.length);
     });
     renderPictures(picturesArray);
