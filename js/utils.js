@@ -29,6 +29,9 @@
         array[j] = temp;
       }
       return array;
+    },
+    sortByDesc: function (a, b) {
+      return b - a;
     }
   };
 })();
