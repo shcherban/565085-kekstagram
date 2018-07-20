@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var MAX_NUMBER_OF_HASHTAGS = 5;
   var MAX_HASHTAG_LENGTH = 20;
   var MAX_EFFECT_DEPTH = 100;
   var DEFAULT_EFFECT_DEPTH = 100;
@@ -209,7 +210,7 @@
         hashtags.splice(i--, 1);
       }
     }
-    if (hashtags.length > 5) {
+    if (hashtags.length > MAX_NUMBER_OF_HASHTAGS) {
       textHashtagsInput.setCustomValidity('Задайте не более пяти хэш-тегов.');
       return;
     }
