@@ -18,7 +18,9 @@
   var scaleLevel = scaleLine.querySelector('.scale__level');
   var scalePin = scaleLine.querySelector('.scale__pin');
   var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
-  var selectedEffect = imageUploadOverlay.querySelector('.effects__radio:checked').value;
+  var effectsListElement = document.querySelector('.effects__list');
+  var selectedEffect = effectsListElement.querySelector('.effects__radio:checked').value;
+  var noneEffectElement = effectsListElement.querySelector('#effect-none');
   var imgUploadPreview = imageUploadOverlay.querySelector('.img-upload__preview');
   var preview = imgUploadPreview.querySelector('img');
   var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--minus');
@@ -40,6 +42,13 @@
     scaleLevel.style.width = scaleValueElement.value + '%';
     scalePin.style.left = scaleValueElement.value * scaleLine.offsetWidth / 100 + 'px';
     applyEffect(selectedEffect, scaleValueElement.value);
+  };
+
+  var setDefaultEffect = function () {
+    selectedEffect = 'none';
+    noneEffectElement.checked = 'checked';
+    scale.classList.add('hidden');
+    setDefaultEffectDepth();
   };
 
   var scalePinMousedownHandler = function (downEvt) {
@@ -79,7 +88,7 @@
     resizingValue = DEFAULT_RESIZING_VALUE;
     resizeControlValueElement.value = resizingValue + '%';
     resizeImagePreview(resizingValue);
-    setDefaultEffectDepth();
+    setDefaultEffect();
     textHashtagsInput.value = '';
     textDescriptionInput.value = '';
     textHashtagsInput.addEventListener('focus', textHashtagsInputFocusHandler);
@@ -179,7 +188,6 @@
     }
   });
 
-  var effectsListElement = document.querySelector('.effects__list');
   var effectsListElementClickHandler = function (evt) {
     var target = evt.target;
     if (target.tagName === 'INPUT') {
