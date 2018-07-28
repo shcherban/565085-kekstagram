@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var MAX_NUMBER_OF_HASHTAGS = 5;
   var MAX_HASHTAG_LENGTH = 20;
   var MAX_EFFECT_DEPTH = 100;
@@ -19,6 +20,7 @@
   var scaleValueElement = imageUploadOverlay.querySelector('.scale__value');
   var selectedEffect = imageUploadOverlay.querySelector('.effects__radio:checked').value;
   var imgUploadPreview = imageUploadOverlay.querySelector('.img-upload__preview');
+  var preview = imgUploadPreview.querySelector('img');
   var resizeControlMinus = imageUploadOverlay.querySelector('.resize__control--minus');
   var resizeControlPlus = imageUploadOverlay.querySelector('.resize__control--plus');
   var resizeControlValueElement = imageUploadOverlay.querySelector('.resize__control--value');
@@ -162,7 +164,19 @@
   };
 
   uploadFileElement.addEventListener('change', function () {
-    openImageUpload();
+    var file = uploadFileElement.files[0];
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+    if (matches) {
+      var reader = new FileReader();
+      reader.addEventListener('load', function () {
+        preview.src = reader.result;
+        openImageUpload();
+      });
+      reader.readAsDataURL(file);
+    }
   });
 
   var effectsListElement = document.querySelector('.effects__list');
