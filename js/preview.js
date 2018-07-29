@@ -8,6 +8,23 @@
   var bigPictureComments = bigPictureElement.querySelector('.social__comments');
   var bigPictureCancelButton = bigPictureElement.querySelector('#picture-cancel');
 
+  function createComment(picture, i, fragment) {
+    var comment = document.createElement('li');
+    var avatar = document.createElement('img');
+    var text = document.createElement('p');
+    comment.classList.add('social__comment', 'social__comment--text');
+    avatar.classList.add('social__picture');
+    avatar.src = 'img/avatar-' + window.utils.getRandomValue(1, 6) + '.svg';
+    avatar.alt = 'Аватар комментатора фотографии';
+    avatar.width = '35';
+    avatar.height = '35';
+    text.classList.add('social__text');
+    text.textContent = picture.comments[i];
+    comment.appendChild(avatar);
+    comment.appendChild(text);
+    fragment.appendChild(comment);
+  }
+
   window.preview = function (picture) {
     bigPictureCancelButton.addEventListener('click', bigPictureCancelButtonClickHandler);
     document.addEventListener('keydown', documentEscapeKeydownHandler);
@@ -17,20 +34,7 @@
     bigPictureLikesCountElement.textContent = picture.likes;
     var fragment = document.createDocumentFragment();
     for (var i = 0; i <= picture.comments.length - 1; i++) {
-      var comment = document.createElement('li');
-      var avatar = document.createElement('img');
-      var text = document.createElement('p');
-      comment.classList.add('social__comment', 'social__comment--text');
-      avatar.classList.add('social__picture');
-      avatar.src = 'img/avatar-' + window.utils.getRandomValue(1, 6) + '.svg';
-      avatar.alt = 'Аватар комментатора фотографии';
-      avatar.width = '35';
-      avatar.height = '35';
-      text.classList.add('social__text');
-      text.textContent = picture.comments[i];
-      comment.appendChild(avatar);
-      comment.appendChild(text);
-      fragment.appendChild(comment);
+      createComment(picture, i, fragment);
     }
     bigPictureComments.innerHTML = '';
     bigPictureComments.appendChild(fragment);
