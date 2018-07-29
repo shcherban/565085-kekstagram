@@ -17,18 +17,18 @@
   var renderPictures = function (picturesArray) {
     var picturesContainer = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i <= picturesArray.length - 1; i++) {
+    picturesArray.forEach(function (picture) {
       var pictureElement = pictureTemplate.cloneNode(true);
       var imageElement = pictureElement.querySelector('.picture__img');
       var likesElement = pictureElement.querySelector('.picture__stat--likes');
       var commentsCountElement = pictureElement.querySelector('.picture__stat--comments');
       var pictureLink = pictureElement.querySelector('.picture__link');
-      imageElement.src = picturesArray[i].url;
-      likesElement.textContent = picturesArray[i].likes;
-      commentsCountElement.textContent = picturesArray[i].comments.length;
-      addPictureEventListener(pictureLink, picturesArray[i]);
+      imageElement.src = picture.url;
+      likesElement.textContent = picture.likes;
+      commentsCountElement.textContent = picture.comments.length;
+      addPictureEventListener(pictureLink, picture);
       fragment.appendChild(pictureElement);
-    }
+    });
     do {
       var oldPictureLink = picturesContainer.querySelector('.picture__link');
       if (oldPictureLink) {
