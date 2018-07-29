@@ -46,7 +46,7 @@
 
   var setDefaultEffect = function () {
     selectedEffect = 'none';
-    noneEffectElement.checked = 'checked';
+    noneEffectElement.checked = true;
     scale.classList.add('hidden');
     setDefaultEffectDepth();
   };
