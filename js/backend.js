@@ -3,9 +3,11 @@
 (function () {
   var UPLOAD_URL = 'https://js.dump.academy/kekstagram';
   var DOWNDOAD_URL = 'https://js.dump.academy/kekstagram/data';
-  var SUCCESS_CODE = 200;
-  var REDIRECTION_CODE = 300;
-  var CLIENT_ERROR_CODE = 400;
+  var Code = {
+    SUCCESS: 200,
+    REDIRECTION: 300,
+    CLIENT_ERROR: 400
+  };
 
   function prepareXhr(onLoad, onError, isDownload) {
     var xhr = new XMLHttpRequest();
@@ -13,18 +15,17 @@
     xhr.addEventListener('load', function () {
       var error;
       switch (xhr.status - xhr.status % 100) {
-        case SUCCESS_CODE:
+        case Code.SUCCESS:
           if (isDownload) {
             onLoad(xhr.response);
-          }
-          else {
+          } else {
             onLoad();
           }
           break;
-        case REDIRECTION_CODE:
+        case Code.REDIRECTION:
           error = 'Ресурс переехал';
           break;
-        case CLIENT_ERROR_CODE:
+        case Code.CLIENT_ERROR:
           error = 'Ошибка в запросе';
           break;
         default:
