@@ -3,6 +3,9 @@
 (function () {
   var ENTER_KEY_CODE = 13;
   var ESCAPE_KEY_CODE = 27;
+  var compareRandom = function () {
+    return Math.random() - 0.5;
+  };
   window.utils = {
     getRandomElement: function (elements) {
       var randomIndex = Math.floor(Math.random() * elements.length);
@@ -22,13 +25,7 @@
       element.classList.add('visually-hidden');
     },
     shuffle: function (array) {
-      for (var i = array.length - 1; i >= 1; i--) {
-        var j = this.getRandomValue(0, i);
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-      }
-      return array;
+      array.sort(compareRandom);
     },
     sortByDesc: function (a, b) {
       return b - a;
