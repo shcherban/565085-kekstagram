@@ -2,7 +2,7 @@
 
 (function () {
   var UPLOAD_URL = 'https://js.dump.academy/kekstagram';
-  var DOWNDOAD_URL = 'https://js.dump.academy/kekstagram/data';
+  var DOWNDOAD_URL = 'https://javascript.pages.academy/kekstagram/data';
   var Code = {
     SUCCESS: 200,
     REDIRECTION: 300,
