@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var UPLOAD_URL = 'https://js.dump.academy/kekstagram';
+  var UPLOAD_URL = 'https://javascript.pages.academy/kekstagram';
   var DOWNDOAD_URL = 'https://javascript.pages.academy/kekstagram/data';
   var Code = {
     SUCCESS: 200,
